@@ -30,6 +30,25 @@ app.get( '/api/products/:productID', ( req, res ) => {
 	return res.json( singleProduct );
 });
 
+app.get( '/api/v1/query', ( req, res ) => {
+	//console.log( req.query );
+	const { search, limit } = req.query;
+	let sortedProducts = [ ...products ];
+	if( search )
+	{
+		sortedProducts = sortedProducts.filter(( product ) => {
+			return product.name.startWith( search );
+		});
+	}
+	if( limit ) 
+		sortedProducts = sortedProducts.slice( 0, Number( limit ) );
+	if( sortedProducts.length < 1 )
+		return res.status(200).json({ success: true, data: [] });
+	
+	return res.status(200).json( sortedProducts );
+	//res.send( 'hello world' );
+});
+
 app.listen( 5000, () => {
 	console.log( 'Server is listening on port 5000...' );
 });
